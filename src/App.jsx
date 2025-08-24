@@ -231,7 +231,7 @@ const App = () => {
   return (
     <div className={`min-h-screen transition-all duration-1000 overflow-x-hidden relative ${themeClass}`}>
       <audio ref={audioRef} loop preload="metadata">
-        <source src="/audio/audio-3.mp3" type="audio/mpeg" />
+        <source src="/audio/audio.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
 
