@@ -5,7 +5,10 @@ const HandshakeAnimation = ({
     handleHandshakeClick,
     handsConnected,
     textSecondaryClass = "text-slate-600",
-    showHandshake = true
+    showHandshake = true,
+    audioRef,
+    isPlaying,
+    setIsPlaying
 }) => {
     const [leftHandVisible, setLeftHandVisible] = useState(false);
     const [rightHandVisible, setRightHandVisible] = useState(false);
@@ -15,28 +18,49 @@ const HandshakeAnimation = ({
         if (showHandshake) {
             setTimeout(() => setLeftHandVisible(true), 500);
             setTimeout(() => setRightHandVisible(true), 300);
+            
+            setTimeout(async () => {
+                if (audioRef?.current && !isPlaying) {
+                    try {
+                        await audioRef.current.play();
+                        setIsPlaying(true);
+                        console.log('Music started automatically when handshake appeared');
+                    } catch (error) {
+                        console.error('Failed to auto-play audio:', error);
+                    }
+                }
+            }, 500); 
+            
         } else {
             setLeftHandVisible(false);
             setRightHandVisible(false);
         }
-    }, [showHandshake]);
+    }, [showHandshake, audioRef, isPlaying, setIsPlaying]);
 
     useEffect(() => {
         if (handsConnected) {
           const timer = setTimeout(() => {
             setShowHandsConnected(true);
-          }, 900);
+          }, 4000);
           
           return () => clearTimeout(timer);
         } else {
           setShowHandsConnected(false);
         }
-      }, [handsConnected]);
+    }, [handsConnected]);
+
+    const handleClick = () => {
+        if (audioRef?.current && !isPlaying) {
+            audioRef.current.play().catch(console.error);
+            setIsPlaying(true);
+        }
+        handleHandshakeClick();
+    };
 
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center cursor-pointer"
-            onClick={handleHandshakeClick}
+            onClick={handleClick}
         >
             {/* Modern backdrop with glassmorphism */}
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/15 to-pink-500/10 backdrop-blur-md"></div>
@@ -53,15 +77,16 @@ const HandshakeAnimation = ({
 
                 {/* Left person - dengan animasi entrance */}
                 <div
-                    className={`absolute top-1/2 -translate-y-1/2 transition-all duration-[3000ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${handsConnected
-                        ? 'left-1/2 -translate-x-[40px] opacity-0'
+                    className={`absolute top-1/2 -translate-y-1/2 transition-all duration-[12s] ease-[cubic-bezier(0.34,1.56,0.64,1)] 
+                        ${handsConnected
+                        ? 'left-1/2 -translate-x-[40px] opacity-5'
                         : leftHandVisible
                             ? 'left-1/6 md:left-1/3 opacity-100 scale-100'
                             : 'left-0 -translate-x-full opacity-0 scale-50'
                         }`}
                 >
                     <div className="relative group">
-                        <div className={`text-6xl md:text-7xl transition-all duration-1000 ${handsConnected ? 'animate-pulse' : leftHandVisible ? 'animate-bounce-soft animate-slide-in-left' : ''}`}>
+                        <div className={`text-6xl md:text-7xl transition-all duration-100 ${handsConnected ? 'animate-pulse' : leftHandVisible ? 'animate-bounce-soft animate-slide-in-left' : ''}`}>
                             🫱
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl scale-150 opacity-60 group-hover:opacity-80 transition-opacity"></div>
@@ -81,15 +106,15 @@ const HandshakeAnimation = ({
 
                 {/* Right person - dengan animasi entrance */}
                 <div
-                    className={`absolute top-1/2 -translate-y-1/2 transition-all duration-[3000ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${handsConnected
-                        ? 'right-1/2 translate-x-[40px] opacity-0'
+                    className={`absolute top-1/2 -translate-y-1/2 transition-all duration-[12s] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${handsConnected
+                        ? 'right-1/2 translate-x-[40px] opacity-5'
                         : rightHandVisible
-                            ? 'right-1/6 md:right-1/3 opacity-100 scale-100'
+                            ? 'right-1/6 md:right-1/3 opacity-100 scale-150'
                             : 'right-0 translate-x-full opacity-0 scale-50'
                         }`}
                 >
                     <div className="relative group">
-                        <div className={`text-6xl md:text-7xl transition-all duration-1000 ${handsConnected ? 'animate-pulse' : rightHandVisible ? 'animate-bounce-soft-delay animate-slide-in-right' : ''}`}>
+                        <div className={`text-6xl md:text-7xl transition-all duration-100 ${handsConnected ? 'animate-pulse' : rightHandVisible ? 'animate-bounce-soft-delay animate-slide-in-right' : ''}`}>
                             🫲
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-2xl scale-150 opacity-60 group-hover:opacity-80 transition-opacity"></div>
@@ -140,7 +165,8 @@ const HandshakeAnimation = ({
             }`}>
                 {!handsConnected && (
                     <p className={`${textSecondaryClass} text-sm animate-pulse`}>
-                        Tap anywhere to connect
+                        {/* Update text karena musik sudah auto-play */}
+                        Tap anywhere to continue
                     </p>
                 )}
             </div>
