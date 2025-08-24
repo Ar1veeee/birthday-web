@@ -26,7 +26,7 @@ const HandshakeAnimation = ({
                         setIsPlaying(true);
                         console.log('Music started automatically when handshake appeared');
                     } catch (error) {
-                        console.log('Auto-play blocked by browser, will play on user interaction');
+                        console.error('Auto-play blocked by browser, will play on user interaction', error);
                     }
                 }
             }, 500); 
