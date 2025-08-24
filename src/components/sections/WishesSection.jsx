@@ -197,11 +197,7 @@ const WishesSection = ({
                     <div className="flex justify-center items-center gap-6 flex-wrap">
                         <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/10">
                             <Star className="w-4 h-4 text-yellow-400" />
-                            <span className={`${textClass} font-semibold`}>{wishes.length} wish dibuat</span>
-                        </div>
-                        <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 backdrop-blur-sm border border-white/10">
-                            <Heart className="w-4 h-4 text-red-400" />
-                            <span className={`${textClass} font-semibold`}>cinta tak terbatas terkirim</span>
+                            <span className={`${textClass} font-semibold`}>{wishes.length} wish dibuat untukmu</span>
                         </div>
                     </div>
                     <p className={`${textClass} opacity-60 text-lg mt-4`}>

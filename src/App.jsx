@@ -231,7 +231,7 @@ const App = () => {
   return (
     <div className={`min-h-screen transition-all duration-1000 overflow-x-hidden relative ${themeClass}`}>
       <audio ref={audioRef} loop preload="metadata">
-        <source src="/audio/audio-2.m4a" type="audio/mpeg" />
+        <source src="/audio/audio-3.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
 
@@ -243,7 +243,20 @@ const App = () => {
       {showFireworks && <Fireworks />}
       {showMeteors && <MeteorShower />}
       {showRainbowTrail && <RainbowTrail mousePos={mousePos} />}
-      {showHandshake && <HandshakeAnimation handleHandshakeClick={handleHandshakeClick} handsConnected={handsConnected} cardBgClass={cardBgClass} borderClass={borderClass} textClass={textClass} textSecondaryClass={textSecondaryClass} showHandshake={true} />}
+      {showHandshake && (
+        <HandshakeAnimation
+          handleHandshakeClick={handleHandshakeClick}
+          handsConnected={handsConnected}
+          cardBgClass={cardBgClass}
+          borderClass={borderClass}
+          textClass={textClass}
+          textSecondaryClass={textSecondaryClass}
+          showHandshake={true}
+          audioRef={audioRef}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+        />
+      )}
 
       <Particles particles={particles} />
 
