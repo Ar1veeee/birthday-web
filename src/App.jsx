@@ -1,27 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { photos, loveQuotes, specialMessages, wishes } from './constants/content';
+import { photos, loveQuotes, specialMessages } from './constants/content';
 
-// Import components
+// Import components UI
 import Particles from './components/ui/Particles';
 import MusicControl from './components/ui/MusicControl';
 import ThemeToggle from './components/ui/ThemeToggle';
 import SpecialMessagePopup from './components/ui/SpecialMessagePopup';
 import HeartCounter from './components/ui/HeartCounter';
 import HandshakeAnimation from './components/ui/HandshakeAnimation';
+import RomanticPreloader from './components/ui/RomanticPreloader';
+
+// Import components Effects
 import Fireworks from './components/effects/Fireworks';
 import MeteorShower from './components/effects/MeteorShower';
 import RainbowTrail from './components/effects/RainbowTrail';
+
+// Import components Sections
 import HeroSection from './components/sections/HeroSection';
 import QuotesSection from './components/sections/QuotesSection';
 import GallerySection from './components/sections/GallerySection';
 import WishesSection from './components/sections/WishesSection';
 import FinaleSection from './components/sections/FinaleSection';
 
-// Import global styles
+// Import global style
 import './index.css';
 
 const App = () => {
-  const [showContent, setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(true);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [particles, setParticles] = useState([]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -44,6 +49,7 @@ const App = () => {
     finale: false
   });
   const [showHandshake, setShowHandshake] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(false)
   const [handsConnected, setHandsConnected] = useState(false);
   const [handshakeTriggered, setHandshakeTriggered] = useState(false);
   const audioRef = useRef(null);
@@ -115,10 +121,21 @@ const App = () => {
       const currentScrollY = window.scrollY;
       setScrollY(currentScrollY);
       const scrollPercentage = (currentScrollY / window.innerHeight) * 100;
+
       if (scrollPercentage > 20 && scrollPercentage < 150 && !handshakeTriggered) {
-        setShowHandshake(true);
-        setHandshakeTriggered(true);
-        setTimeout(() => setHandsConnected(true), 2000);
+        try {
+          console.log('🚀 Attempting to trigger preloader...');
+          setShowPreloader(true);
+          setHandshakeTriggered(true);
+          console.log('✅ Preloader triggered successfully');
+        } catch (error) {
+          console.error('❌ Error triggering preloader:', {
+            message: error.message,
+            stack: error.stack,
+            scrollPercentage,
+            handshakeTriggered
+          });
+        }
       }
     };
     window.addEventListener('scroll', handleScroll);
@@ -221,6 +238,12 @@ const App = () => {
     setShowHandshake(false);
   };
 
+  const handleStartExperience = () => {
+    setShowPreloader(false);
+    setShowHandshake(true);
+    setTimeout(() => setHandsConnected(true), 2000);
+  };
+
   const themeClass = isDarkMode ? 'bg-gradient-to-br from-gray-900 via-purple-900 via-pink-900 to-indigo-900' : 'bg-gradient-to-br from-pink-50 via-purple-50 via-rose-50 to-indigo-100';
   const textClass = isDarkMode ? 'text-white' : 'text-gray-800';
   const cardBgClass = isDarkMode ? 'bg-white/10 backdrop-blur-xl' : 'bg-white/90 backdrop-blur-lg';
@@ -234,29 +257,38 @@ const App = () => {
         <source src="/audio/audio.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
+      <MusicControl
+        toggleMusic={toggleMusic}
+        isPlaying={isPlaying}
+        cardBgClass={cardBgClass}
+        borderClass={borderClass}
+        isDarkMode={isDarkMode}
+      />
 
-      <MusicControl toggleMusic={toggleMusic} isPlaying={isPlaying} cardBgClass={cardBgClass} borderClass={borderClass} isDarkMode={isDarkMode} />
-      <ThemeToggle isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+      <ThemeToggle
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      />
 
-      {showSpecialMessage && <SpecialMessagePopup cardBgClass={cardBgClass} borderClass={borderClass} textClass={textClass} message={specialMessages[currentMessageIndex]} />}
-      {heartClicks > 0 && <HeartCounter heartClicks={heartClicks} cardBgClass={cardBgClass} borderClass={borderClass} textClass={textClass} />}
-      {showFireworks && <Fireworks />}
-      {showMeteors && <MeteorShower />}
-      {showRainbowTrail && <RainbowTrail mousePos={mousePos} />}
-      {showHandshake && (
-        <HandshakeAnimation
-          handleHandshakeClick={handleHandshakeClick}
-          handsConnected={handsConnected}
+      {showSpecialMessage &&
+        <SpecialMessagePopup
           cardBgClass={cardBgClass}
           borderClass={borderClass}
           textClass={textClass}
-          textSecondaryClass={textSecondaryClass}
-          showHandshake={true}
-          audioRef={audioRef}
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
-        />
-      )}
+          message={specialMessages[currentMessageIndex]}
+        />}
+
+      {heartClicks > 0 &&
+        <HeartCounter
+          heartClicks={heartClicks}
+          cardBgClass={cardBgClass}
+          borderClass={borderClass}
+          textClass={textClass}
+        />}
+
+      {showFireworks && <Fireworks />}
+      {showMeteors && <MeteorShower />}
+      {showRainbowTrail && <RainbowTrail mousePos={mousePos} />}
 
       <Particles particles={particles} />
 
@@ -303,6 +335,30 @@ const App = () => {
           textTertiaryClass={textTertiaryClass}
         />
       </main>
+
+      {showPreloader && (
+        <RomanticPreloader
+          onStartExperience={handleStartExperience}
+          audioRef={audioRef}
+          setIsPlaying={setIsPlaying}
+        />
+      )}
+
+      {showHandshake && (
+        <HandshakeAnimation
+          handleHandshakeClick={handleHandshakeClick}
+          handsConnected={handsConnected}
+          cardBgClass={cardBgClass}
+          borderClass={borderClass}
+          textClass={textClass}
+          textSecondaryClass={textSecondaryClass}
+          showHandshake={true}
+          audioRef={audioRef}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+        />
+      )}
+
     </div>
   );
 };
