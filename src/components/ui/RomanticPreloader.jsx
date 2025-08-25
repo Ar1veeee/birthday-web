@@ -11,15 +11,13 @@ const RomanticPreloader = ({
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // Heart beating animation sequence
     const heartInterval = setInterval(() => {
       setHeartBeats(prev => prev + 1);
     }, 1000);
 
-    // Show play button after a few heartbeats
     const showButtonTimer = setTimeout(() => {
       setShowPlayButton(true);
-    }, 1500); // Dipercepat dari 3000ms ke 1500ms
+    }, 1500); 
 
     return () => {
       clearInterval(heartInterval);
@@ -28,7 +26,6 @@ const RomanticPreloader = ({
   }, []);
 
   const handleStartClick = async () => {
-    // Start audio first
     if (audioRef?.current) {
       try {
         await audioRef.current.play();
@@ -39,10 +36,8 @@ const RomanticPreloader = ({
       }
     }
 
-    // Fade out preloader
     setFadeOut(true);
     
-    // Call parent function after fade animation
     setTimeout(() => {
       onStartExperience();
     }, 800);

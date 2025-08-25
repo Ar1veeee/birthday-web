@@ -131,7 +131,7 @@ const QuotesSection = ({
                                     {/* Quote Text with typewriter effect styling */}
                                     <div className="relative">
                                         <p className={`text-2xl md:text-5xl leading-relaxed font-bold mb-12 transition-all duration-1000 delay-500 ${sectionAnimations.quotes ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-                                            <span className="bg-gradient-to-r from-white via-pink-200 to-purple-200 bg-clip-text text-transparent">
+                                            <span className="bg-gradient-to-r from-white via-pink-200 to-purple-200 bg-clip-text text-white">
                                                 "{loveQuotes[currentQuoteIndex].text}"
                                             </span>
                                         </p>

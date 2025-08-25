@@ -26,7 +26,6 @@ const GallerySection = ({
         }, 4000);
     };
 
-    // Add custom CSS for animations
     const styles = `
         @keyframes progress {
             from { width: 0% }
@@ -74,12 +73,11 @@ const GallerySection = ({
         }
     `;
 
-    // Add styles to head
     useEffect(() => {
         const styleElement = document.createElement('style');
         styleElement.textContent = styles;
         document.head.appendChild(styleElement);
-        
+
         return () => {
             document.head.removeChild(styleElement);
         };
@@ -87,7 +85,7 @@ const GallerySection = ({
 
     useEffect(() => {
         if (!isSlideshow) return;
-        
+
         const interval = setInterval(() => {
             setCurrentPhotoIndex(prev => (prev + 1) % photosData.length);
         }, 3000);
@@ -95,7 +93,6 @@ const GallerySection = ({
         return () => clearInterval(interval);
     }, [isSlideshow, setCurrentPhotoIndex]);
 
-    // Close modal when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (showShareModal && e.target.classList.contains('modal-backdrop')) {
@@ -139,7 +136,6 @@ const GallerySection = ({
         setViewCount(prev => prev + Math.floor(Math.random() * 3) + 1);
     };
 
-    // Share functionality
     const shareOptions = [
         {
             name: 'Facebook',
@@ -166,29 +162,24 @@ const GallerySection = ({
             color: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
             action: async () => {
                 const text = `${photosData[currentPhotoIndex]?.caption}\n\n${photosData[currentPhotoIndex]?.tags?.map(tag => `#${tag}`).join(' ') || '#memories #love'}\n\n📸 Check out more at: ${window.location.href}`;
-                
+
                 try {
                     await navigator.clipboard.writeText(text);
-                    
-                    // Try to open Instagram mobile app (works on mobile devices)
+
                     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                    
+
                     if (isMobile) {
-                        // Attempt to open Instagram app
                         window.location.href = 'instagram://app';
-                        
-                        // Fallback to Instagram web after 2 seconds if app doesn't open
+
                         setTimeout(() => {
                             window.open('https://www.instagram.com/', '_blank');
                         }, 2000);
                     } else {
-                        // On desktop, open Instagram web
                         window.open('https://www.instagram.com/', '_blank');
                     }
-                    
-                    // Show custom notification instead of alert
+
                     showCustomAlert('Caption copied to clipboard! 📋\nInstagram is opening - you can paste and post! 🚀');
-                    
+
                 } catch (err) {
                     console.error('Failed to copy to clipboard:', err);
                     showCustomAlert('Please copy this caption manually:\n\n' + text);
@@ -217,10 +208,9 @@ const GallerySection = ({
         }
     };
 
-    // Download functionality
     const downloadPhoto = async (photoUrl, fileName) => {
         setDownloadStatus(prev => ({ ...prev, [currentPhotoIndex]: 'downloading' }));
-        
+
         try {
             const response = await fetch(photoUrl);
             const blob = await response.blob();
@@ -233,7 +223,7 @@ const GallerySection = ({
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
-            
+
             setDownloadStatus(prev => ({ ...prev, [currentPhotoIndex]: 'completed' }));
             setTimeout(() => {
                 setDownloadStatus(prev => ({ ...prev, [currentPhotoIndex]: null }));
@@ -247,7 +237,6 @@ const GallerySection = ({
         }
     };
 
-    // Sample photos data if not provided
     const defaultPhotos = [
         {
             url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&h=600&fit=crop",
@@ -260,7 +249,7 @@ const GallerySection = ({
         {
             url: "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800&h=600&fit=crop",
             caption: "Adventure Together",
-            date: "February 20, 2024", 
+            date: "February 20, 2024",
             location: "Mountain Trail",
             mood: "🏔️ feeling adventurous",
             tags: ["hiking", "adventure", "together"]
@@ -374,7 +363,7 @@ const GallerySection = ({
                                     >
                                         <ArrowLeft className="w-6 h-6 text-white" />
                                     </button>
-                                    
+
                                     <button
                                         onClick={nextPhoto}
                                         className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-all opacity-0 group-hover:opacity-100"
@@ -420,17 +409,17 @@ const GallerySection = ({
                                                 onClick={() => toggleLike(currentPhotoIndex)}
                                                 className="transition-all duration-300 hover:scale-125"
                                             >
-                                                <Heart 
+                                                <Heart
                                                     className={`w-7 h-7 ${likedPhotos.has(currentPhotoIndex) ? 'text-red-500 fill-current animate-bounce' : isDarkMode ? 'text-white hover:text-red-400' : 'text-black hover:text-red-400'}`}
                                                 />
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => setShowShareModal(true)}
                                                 className="hover:scale-110 transition-all"
                                             >
-                                                <Share2 className={`w-6 h-6 ${isDarkMode ? 'text-white hover:text-blue-400' : 'text-black hover:text-blue-400'}`}/>
+                                                <Share2 className={`w-6 h-6 ${isDarkMode ? 'text-white hover:text-blue-400' : 'text-black hover:text-blue-400'}`} />
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => downloadPhoto(photosData[currentPhotoIndex]?.url, `${photosData[currentPhotoIndex]?.caption?.replace(/\s+/g, '-').toLowerCase()}.jpg`)}
                                                 className="hover:scale-110 transition-all relative"
                                                 disabled={downloadStatus[currentPhotoIndex] === 'downloading'}
@@ -448,7 +437,7 @@ const GallerySection = ({
                                             {photosData[currentPhotoIndex]?.mood || '💕 feeling cute'}
                                         </div>
                                     </div>
-                                    
+
                                     {/* Hashtags */}
                                     <div className="flex flex-wrap gap-2">
                                         {photosData[currentPhotoIndex]?.tags?.map((tag, index) => (
@@ -456,12 +445,12 @@ const GallerySection = ({
                                                 #{tag}
                                             </span>
                                         )) || (
-                                            <>
-                                                <span className="text-blue-400 text-sm">#couplegoals</span>
-                                                <span className="text-blue-400 text-sm">#memories</span>
-                                                <span className="text-blue-400 text-sm">#love</span>
-                                            </>
-                                        )}
+                                                <>
+                                                    <span className="text-blue-400 text-sm">#couplegoals</span>
+                                                    <span className="text-blue-400 text-sm">#memories</span>
+                                                    <span className="text-blue-400 text-sm">#love</span>
+                                                </>
+                                            )}
                                     </div>
                                 </div>
                             </div>
@@ -475,23 +464,22 @@ const GallerySection = ({
                                 <div
                                     key={index}
                                     onClick={() => handlePhotoView(index)}
-                                    className={`relative group overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:rotate-1 cursor-pointer ${
-                                        index === currentPhotoIndex 
-                                            ? 'ring-3 ring-pink-400 scale-105 shadow-2xl shadow-pink-500/50' 
+                                    className={`relative group overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:rotate-1 cursor-pointer ${index === currentPhotoIndex
+                                            ? 'ring-3 ring-pink-400 scale-105 shadow-2xl shadow-pink-500/50'
                                             : 'hover:ring-2 hover:ring-purple-300/50 hover:shadow-xl'
-                                    }`}
+                                        }`}
                                     style={{ animationDelay: `${index * 50}ms` }}
                                 >
                                     <div className="relative">
-                                        <img 
-                                            src={photo.url} 
-                                            alt={`Thumbnail ${index + 1}`} 
-                                            className="w-full aspect-square object-cover transition-all duration-500 group-hover:brightness-110 group-hover:scale-110" 
+                                        <img
+                                            src={photo.url}
+                                            alt={`Thumbnail ${index + 1}`}
+                                            className="w-full aspect-square object-cover transition-all duration-500 group-hover:brightness-110 group-hover:scale-110"
                                         />
-                                        
+
                                         {/* Overlay Effects */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                                        
+
                                         {/* Current Photo Indicator */}
                                         {index === currentPhotoIndex && (
                                             <div className="absolute inset-0 flex items-center justify-center">
@@ -517,7 +505,7 @@ const GallerySection = ({
 
                                         {/* Quick Actions on Hover */}
                                         <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                            <div 
+                                            <div
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     downloadPhoto(photo.url, `${photo.caption?.replace(/\s+/g, '-').toLowerCase()}.jpg`);
@@ -526,7 +514,7 @@ const GallerySection = ({
                                             >
                                                 <Download className="w-3 h-3 text-white" />
                                             </div>
-                                            <div 
+                                            <div
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setCurrentPhotoIndex(index);
