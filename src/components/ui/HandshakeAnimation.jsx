@@ -18,7 +18,7 @@ const HandshakeAnimation = ({
         if (showHandshake) {
             setTimeout(() => setLeftHandVisible(true), 500);
             setTimeout(() => setRightHandVisible(true), 300);
-            
+
             setTimeout(async () => {
                 if (audioRef?.current && !isPlaying) {
                     try {
@@ -29,8 +29,8 @@ const HandshakeAnimation = ({
                         console.error('Auto-play blocked by browser, will play on user interaction', error);
                     }
                 }
-            }, 500); 
-            
+            }, 500);
+
         } else {
             setLeftHandVisible(false);
             setRightHandVisible(false);
@@ -39,13 +39,13 @@ const HandshakeAnimation = ({
 
     useEffect(() => {
         if (handsConnected) {
-          const timer = setTimeout(() => {
-            setShowHandsConnected(true);
-          }, 4000);
-          
-          return () => clearTimeout(timer);
+            const timer = setTimeout(() => {
+                setShowHandsConnected(true);
+            }, 4000);
+
+            return () => clearTimeout(timer);
         } else {
-          setShowHandsConnected(false);
+            setShowHandsConnected(false);
         }
     }, [handsConnected]);
 
@@ -79,15 +79,22 @@ const HandshakeAnimation = ({
                 <div
                     className={`absolute top-1/2 -translate-y-1/2 transition-all duration-[12s] ease-[cubic-bezier(0.34,1.56,0.64,1)] 
                         ${handsConnected
-                        ? 'left-1/2 -translate-x-[40px] opacity-5'
-                        : leftHandVisible
-                            ? 'left-1/6 md:left-1/3 opacity-100 scale-100'
-                            : 'left-0 -translate-x-full opacity-0 scale-50'
+                            ? 'left-1/2 -translate-x-[40px] opacity-5'
+                            : leftHandVisible
+                                ? 'left-1/6 md:left-1/3 opacity-100 scale-100'
+                                : 'left-0 -translate-x-full opacity-0 scale-50'
                         }`}
                 >
                     <div className="relative group">
                         <div className={`text-6xl md:text-7xl transition-all duration-100 ${handsConnected ? 'animate-pulse' : leftHandVisible ? 'animate-bounce-soft animate-slide-in-left' : ''}`}>
-                            🫱
+                            <img
+                                src="/icons/left-hand.png"
+                                alt="🫱"
+                                className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg inline-block"
+                                onError={(e) => {
+                                    e.target.outerHTML = '🫱';
+                                }}
+                            />
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl scale-150 opacity-60 group-hover:opacity-80 transition-opacity"></div>
                         <div className={`absolute -top-4 -left-4 transition-all duration-500 delay-300 ${leftHandVisible ? 'animate-float-gentle opacity-100' : 'opacity-0'}`}>
@@ -115,7 +122,14 @@ const HandshakeAnimation = ({
                 >
                     <div className="relative group">
                         <div className={`text-6xl md:text-7xl transition-all duration-100 ${handsConnected ? 'animate-pulse' : rightHandVisible ? 'animate-bounce-soft-delay animate-slide-in-right' : ''}`}>
-                            🫲
+                            <img
+                                src="/icons/right-hand.png"
+                                alt="🫲"
+                                className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg inline-block"
+                                onError={(e) => {
+                                    e.target.outerHTML = '🫲';
+                                }}
+                            />
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-2xl scale-150 opacity-60 group-hover:opacity-80 transition-opacity"></div>
                         <div className={`absolute -top-4 -right-4 transition-all duration-500 delay-300 ${rightHandVisible ? 'animate-float-gentle opacity-100' : 'opacity-0'}`}>
@@ -139,7 +153,14 @@ const HandshakeAnimation = ({
                     >
                         <div className="relative group">
                             <div className="text-8xl md:text-9xl animate-pulse drop-shadow-2xl animate-bounce-soft-delay">
-                                🤝
+                            <img
+                                src="/icons/handshake.png"
+                                alt="🤝"
+                                className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg inline-block"
+                                onError={(e) => {
+                                    e.target.outerHTML = '🤝';
+                                }}
+                            />
                             </div>
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-pink-400/30 rounded-full blur-3xl scale-150 opacity-80 animate-pulse"></div>
                             <div className="absolute -top-8 -left-8 animate-float-celebration">
@@ -160,9 +181,8 @@ const HandshakeAnimation = ({
             </div>
 
             {/* Click instruction with entrance animation */}
-            <div className={`absolute bottom-12 left-1/2 -translate-x-1/2 text-center transition-all duration-1000 delay-1000 ${
-                showHandshake && (leftHandVisible || rightHandVisible) ? 'opacity-70 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <div className={`absolute bottom-12 left-1/2 -translate-x-1/2 text-center transition-all duration-1000 delay-1000 ${showHandshake && (leftHandVisible || rightHandVisible) ? 'opacity-70 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}>
                 {!handsConnected && (
                     <p className={`${textSecondaryClass} text-sm animate-pulse`}>
                         {/* Update text karena musik sudah auto-play */}
